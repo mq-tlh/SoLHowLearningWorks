@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflective Planning Checklist — Science of Learning | Macquarie University</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --mq-red: #A6192E;
+    --mq-charcoal: #373A36;
+    --mq-sand: #EDEBE5;
+    --mq-purple: #80225F;
+    --mq-deep-red: #76232F;
+    --mq-magenta: #C6007E;
+    --bg: #ffffff;
+    --bg-secondary: #f7f6f3;
+    --border: #e0deda;
+    --text: #373A36;
+    --text-muted: #6b6965;
+    --text-hint: #9e9b97;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-secondary);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--mq-charcoal);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-logo {
+    width: 32px; height: 32px; background: var(--mq-red);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.5px;
+  }
+  .header-title { font-size: 14px; font-weight: 500; color: #fff; line-height: 1.3; }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,0.55); }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* SECTION INTRO */
+  .section-intro { text-align: center; padding: 2rem 1rem; }
+  .section-number {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    color: var(--mq-red); text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .section-title { font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 0.75rem; }
+  .section-desc { font-size: 15px; color: var(--text-muted); max-width: 480px; margin: 0 auto 2rem; line-height: 1.65; }
+  .section-intro-meta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--mq-sand); border-radius: 20px;
+    padding: 5px 14px; font-size: 12px; color: var(--mq-charcoal); margin-bottom: 1.5rem;
+  }
+  .btn-primary {
+    background: var(--mq-red); color: #fff; border: none;
+    border-radius: var(--radius-md); padding: 12px 32px;
+    font-size: 15px; font-weight: 600; cursor: pointer; letter-spacing: 0.01em;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--mq-deep-red); }
+
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 1.25rem; }
+  .progress-labels {
+    font-size: 12px; color: var(--text-muted);
+    margin-bottom: 6px; display: flex; justify-content: space-between;
+  }
+  .progress-track { height: 5px; background: var(--border); border-radius: 3px; }
+  .progress-fill { height: 5px; background: var(--mq-red); border-radius: 3px; transition: width 0.4s ease; }
+
+  /* SECTION TABS */
+  .section-tabs { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .section-tab {
+    font-size: 11px; padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border); color: var(--text-muted); background: transparent;
+  }
+  .section-tab.active { background: var(--mq-red); color: #fff; border-color: var(--mq-red); }
+  .section-tab.done { background: var(--mq-sand); color: var(--mq-charcoal); border-color: transparent; }
+
+  /* QUESTION */
+  .q-area { display: flex; flex-direction: column; align-items: center; gap: 1rem; min-height: 340px; }
+  .q-counter { font-size: 12px; color: var(--text-muted); align-self: flex-start; }
+
+  .question-card {
+    width: 100%; background: var(--bg);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 1.75rem; user-select: none; cursor: grab;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .question-card:active { cursor: grabbing; }
+  .question-card.tilting-right { transform: rotate(2.5deg); box-shadow: 4px 4px 16px rgba(166,25,46,0.12); }
+  .question-card.tilting-left { transform: rotate(-2.5deg); box-shadow: -4px 4px 16px rgba(128,34,95,0.12); }
+  .question-card.fly-right { animation: flyRight 0.32s ease forwards; pointer-events: none; }
+  .question-card.fly-left { animation: flyLeft 0.32s ease forwards; pointer-events: none; }
+
+  @keyframes flyRight { to { transform: translateX(150%) rotate(10deg); opacity: 0; } }
+  @keyframes flyLeft  { to { transform: translateX(-150%) rotate(-10deg); opacity: 0; } }
+
+  .q-text { font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.65; }
+
+  .info-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--mq-red); color: var(--mq-red);
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    vertical-align: middle; margin-left: 8px; background: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .info-btn:hover { background: var(--mq-red); color: #fff; }
+
+  .tooltip-box {
+    display: none; margin-top: 12px;
+    background: var(--mq-sand); border-radius: var(--radius-md);
+    padding: 10px 14px; font-size: 13px; color: var(--mq-charcoal); line-height: 1.55;
+    border-left: 3px solid var(--mq-red);
+  }
+  .tooltip-box.visible { display: block; }
+
+  .drag-hint { font-size: 12px; color: var(--text-hint); text-align: center; }
+
+  /* BUCKETS */
+  .buckets { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+  .bucket {
+    border-radius: var(--radius-lg); border: 2px dashed var(--border);
+    padding: 1.1rem; min-height: 95px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 5px; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .bucket-do:hover, .bucket-do.drag-over { border-color: var(--mq-red); background: rgba(166,25,46,0.05); }
+  .bucket-develop:hover, .bucket-develop.drag-over { border-color: var(--mq-purple); background: rgba(128,34,95,0.05); }
+  .bucket-icon { font-size: 24px; line-height: 1; }
+  .bucket-do .bucket-icon { color: var(--mq-red); }
+  .bucket-develop .bucket-icon { color: var(--mq-purple); }
+  .bucket-label { font-size: 13px; font-weight: 600; color: var(--text); text-align: center; }
+  .bucket-sub { font-size: 11px; color: var(--text-hint); text-align: center; }
+
+  /* SECTION SUMMARY */
+  .summary-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+  .summary-badge {
+    background: var(--mq-red); color: #fff; border-radius: 50%;
+    width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 600; flex-shrink: 0;
+  }
+  .summary-title-text { font-size: 20px; font-weight: 600; color: var(--text); }
+  .summary-stat { font-size: 14px; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.5; }
+  .summary-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  .summary-col { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px 16px; border: 1px solid var(--border); }
+  .summary-col-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .summary-col.already .summary-col-title { color: var(--mq-red); }
+  .summary-col.develop .summary-col-title { color: var(--mq-purple); }
+  .summary-item {
+    font-size: 12px; color: var(--text-muted); padding: 4px 0;
+    border-bottom: 1px solid var(--border); line-height: 1.5;
+  }
+  .summary-item:last-child { border-bottom: none; }
+
+  /* FINAL */
+  .final-header { text-align: center; margin-bottom: 1.75rem; }
+  .final-header h2 { font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+  .final-header p { font-size: 14px; color: var(--text-muted); }
+  .radar-wrap { display: flex; justify-content: center; margin-bottom: 1.75rem; }
+  .profile-narrative {
+    background: var(--mq-sand); border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+    border-left: 4px solid var(--mq-red);
+  }
+  .profile-narrative h3 { font-size: 13px; font-weight: 700; color: var(--mq-charcoal); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .profile-narrative p { font-size: 14px; color: var(--mq-charcoal); line-height: 1.7; }
+
+  .section-bars { margin-bottom: 1.75rem; }
+  .bars-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 12px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+  .bar-label { font-size: 12px; color: var(--text-muted); width: 140px; flex-shrink: 0; text-align: right; }
+  .bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 8px; border-radius: 4px; background: var(--mq-red); transition: width 0.9s ease; }
+  .bar-pct { font-size: 12px; color: var(--mq-red); font-weight: 600; width: 36px; text-align: right; }
+
+  .final-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 0.5rem; }
+  .btn-outline {
+    background: transparent; border: 1.5px solid var(--mq-red); color: var(--mq-red);
+    border-radius: var(--radius-md); padding: 10px 24px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-outline:hover { background: rgba(166,25,46,0.06); }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 16px;
+    font-size: 11px; color: var(--text-hint);
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+  }
+
+  /* PRINT */
+  @media print {
+    header, footer, main { display: none !important; }
+    #print-area { display: block !important; }
+    .print-section-block { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="header-logo">MQ</div>
+    <div>
+      <div class="header-title">Science of Learning</div>
+      <div class="header-sub">Macquarie University — Teachers' Learning Hub</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- SECTION INTRO -->
+  <div id="screen-intro" class="screen active">
+    <div class="section-intro">
+      <div class="section-number" id="section-number"></div>
+      <div class="section-title" id="section-title"></div>
+      <div class="section-desc" id="section-desc"></div>
+      <div class="section-intro-meta" id="section-meta"></div>
+      <br>
+      <button class="btn-primary" id="start-section-btn">Begin this section</button>
+    </div>
+  </div>
+
+  <!-- QUESTION -->
+  <div id="screen-question" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-labels">
+        <span id="overall-progress-text"></span>
+        <span id="q-fraction"></span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="section-tabs" id="section-tabs"></div>
+    <div class="q-area">
+      <div class="q-counter" id="q-counter"></div>
+      <div class="question-card" id="question-card" draggable="true">
+        <div class="q-text" id="q-text"></div>
+        <button class="info-btn" id="hint-btn" style="display:none">i</button>
+        <div class="tooltip-box" id="tooltip-box"></div>
+      </div>
+      <div class="drag-hint">drag the card left or right — or click a bucket below</div>
+      <div class="buckets">
+        <div class="bucket bucket-do" id="bucket-do">
+          <div class="bucket-icon">✓</div>
+          <div class="bucket-label">I already do this</div>
+          <div class="bucket-sub">Drop or click</div>
+        </div>
+        <div class="bucket bucket-develop" id="bucket-develop">
+          <div class="bucket-icon">↑</div>
+          <div class="bucket-label">I want to develop this</div>
+          <div class="bucket-sub">Drop or click</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION SUMMARY -->
+  <div id="screen-summary" class="screen">
+    <div class="summary-header">
+      <div class="summary-badge" id="summary-badge"></div>
+      <div class="summary-title-text" id="summary-title-text"></div>
+    </div>
+    <div class="summary-stat" id="summary-stat"></div>
+    <div class="summary-cols">
+      <div class="summary-col already">
+        <div class="summary-col-title">Already doing</div>
+        <div id="summary-do-list"></div>
+      </div>
+      <div class="summary-col develop">
+        <div class="summary-col-title">Want to develop</div>
+        <div id="summary-dev-list"></div>
+      </div>
+    </div>
+    <button class="btn-primary" id="next-section-btn" style="width:100%">Next section →</button>
+  </div>
+
+  <!-- FINAL PROFILE -->
+  <div id="screen-final" class="screen">
+    <div class="final-header">
+      <h2>Your teaching profile</h2>
+      <p>Based on your responses across all 7 sections</p>
+    </div>
+    <div class="radar-wrap"><canvas id="radar-chart" width="320" height="280"></canvas></div>
+    <div class="profile-narrative">
+      <h3>Your profile</h3>
+      <p id="narrative-text"></p>
+    </div>
+    <div class="section-bars">
+      <div class="bars-title">Section breakdown</div>
+      <div id="section-bars"></div>
+    </div>
+    <div class="final-btns">
+      <button class="btn-primary" id="print-btn">&#128438;&nbsp; Print my results</button>
+      <button class="btn-outline" id="restart-btn">Start again</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Macquarie University Teachers' Learning Hub &nbsp;|&nbsp; Science of Learning: How Learning Works &nbsp;|&nbsp; A/Prof Penny Van Bergen
+</footer>
+
+<!-- PRINT OUTPUT (hidden until print) -->
+<div id="print-area" style="display:none;"></div>
+
+<script>
+const SECTIONS = [
+  { title: "Attention", desc: "How you capture, maintain, and manage student focus during learning.", questions: [
+    { text: "I ensure students are attending before introducing new content.", hint: "e.g. a settling routine, a prompt, a question to focus attention" },
+    { text: "I minimise unnecessary distractors in my learning environment.", hint: "e.g. visual clutter, unrelated digital notifications, competing stimuli" },
+    { text: "I have a ready-to-resume strategy when attention is lost.", hint: "e.g. a routine, a cue, a brief re-orienting prompt" },
+    { text: "I keep my instructional materials and assessments free of 'bells and whistles' that don't add to learning.", hint: null },
+    { text: "I consider how attention demands vary across different students in my class.", hint: "e.g. age, individual differences, context" }
+  ]},
+  { title: "Working memory and cognitive load", desc: "How you manage the mental effort involved in processing new information.", questions: [
+    { text: "I sequence new content carefully and introduce one concept or step at a time.", hint: "Rather than presenting everything at once" },
+    { text: "I consider both the volume and the complexity of new information being introduced.", hint: "Complexity, not just quantity, burdens working memory" },
+    { text: "I use worked examples before asking novice students to attempt problems independently.", hint: null },
+    { text: "I keep related information together in time and place.", hint: "e.g. instruction and practice close together; labels near diagrams" },
+    { text: "I avoid unnecessary redundancy in how I present material.", hint: "e.g. reading aloud text that students are simultaneously reading" },
+    { text: "I provide external records (e.g. notes, reference sheets) where content complexity is high.", hint: null },
+    { text: "I activate prior knowledge before introducing new content.", hint: "Ensuring new information is integrated into the now-active schema" }
+  ]},
+  { title: "Schemas and long-term memory", desc: "How you build on and connect to what students already know.", questions: [
+    { text: "I find out what students already know before introducing new content.", hint: null },
+    { text: "I use strategies which explicitly connect new information to students' existing knowledge.", hint: "Helping them see how new content links to what they already know" },
+    { text: "I address misconceptions directly — I don't assume silence means understanding.", hint: "Misconceptions embedded in schemas are hard to shift later" },
+    { text: "I aim to build rich, connected knowledge rather than isolated facts.", hint: "Knowledge-rich curriculum; schemas rather than lists" },
+    { text: "I design for knowledge to be used (for critical thinking, problem-solving, and application), not just stored.", hint: null }
+  ]},
+  { title: "Encoding — making learning stick", desc: "How you ensure students process content deeply, not just superficially.", questions: [
+    { text: "I use elaboration strategies: asking students to extend, connect, or apply content.", hint: "e.g. why questions, giving examples, making connections between topics" },
+    { text: "I prompt students to generate responses themselves rather than doing the thinking for them.", hint: "Self-generated answers are better recalled than those that are read or heard" },
+    { text: "I use spacing — returning to the same content across multiple lessons or sessions.", hint: "Rather than teaching a topic once and moving on" },
+    { text: "I use interleaving — mixing related problem types or topics during practice.", hint: "Once foundational knowledge is in place" },
+    { text: "I choose deep encoding strategies that suit my content and discipline.", hint: "e.g. hypothesising in science; debate in humanities; case analysis in professional fields" },
+    { text: "I aim for students to grapple with meaning, and not to rely on fluency or familiarity.", hint: "Fluency feels like learning but does not guarantee it" }
+  ]},
+  { title: "Retrieval practice", desc: "How you use the act of remembering as a learning tool.", questions: [
+    { text: "I build regular low-stakes retrieval into my lessons.", hint: "e.g. starting each lesson by asking what students remember from last time" },
+    { text: "I use a range of retrieval types to suit different learning goals.", hint: "Recognition (MCQ) → prompted recall (short answer) → free recall (brain dump, essay)" },
+    { text: "I use retrieval practice that is not graded but focused on learning, not testing.", hint: null },
+    { text: "I return to previously taught content, not just current content.", hint: "Spaced retrieval interrupts forgetting and strengthens memory pathways" },
+    { text: "I provide memory cues when students are stuck, and then gradually reduce scaffolding.", hint: "Harder retrieval produces stronger learning, but it must be manageable" },
+    { text: "I use discussion as retrieval and ask students to explain, justify, or reconstruct.", hint: "Activates the same retrieval pathways as a quiz" }
+  ]},
+  { title: "Building expertise", desc: "How you support students to develop deep, lasting competence.", questions: [
+    { text: "I give students regular, meaningful practice, not rote repetition.", hint: "Practice that engages them with the material in discipline-appropriate ways" },
+    { text: "I provide deliberate practice opportunities: focused tasks with clear goals and feedback.", hint: "Not just general experience or exposure" },
+    { text: "I offer clear, timely feedback that helps students refine specific skills.", hint: null },
+    { text: "I hold high expectations. I believe all students can build expertise.", hint: "Expertise is not about natural ability; it is about accumulated knowledge and practice" },
+    { text: "I design for deep, connected knowledge, not surface familiarity.", hint: "Expert knowledge is rich and networked, not a list of isolated facts" }
+  ]},
+  { title: "Avoiding neuromyths", desc: "How you ensure your practice is grounded in evidence.", questions: [
+    { text: "I base my pedagogical decisions on evidence, not on popular but unsupported theories.", hint: null },
+    { text: "I choose visual, auditory, and/or kinaesthetic modalities that best suit the content or task.", hint: "Individual learning styles are not supported by evidence" },
+    { text: "I know multiple intelligences are a theory of intelligence and not a pedagogical framework.", hint: "I recognise diverse talents without treating them as learning categories" },
+    { text: "I do not assume students are either left-brained or right-brained.", hint: "I don't limit any student's capacity for both analytical and creative work" },
+    { text: "When I encounter a new 'brain-based' teaching claim, I ask: what is the evidence?", hint: null }
+  ]}
+];
+
+let state = { sectionIdx: 0, questionIdx: 0, responses: SECTIONS.map(s => s.questions.map(() => null)) };
+let answering = false;
+let radarChart = null;
+
+function totalQ() { return SECTIONS.reduce((a,s) => a + s.questions.length, 0); }
+function answeredQ() { return state.responses.flat().filter(r => r !== null).length; }
+function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('screen-'+id).classList.add('active'); }
+
+function renderTabs() {
+  const wrap = document.getElementById('section-tabs'); wrap.innerHTML = '';
+  SECTIONS.forEach((s,i) => {
+    const t = document.createElement('div');
+    t.className = 'section-tab' + (i===state.sectionIdx?' active':i<state.sectionIdx?' done':'');
+    t.textContent = (i+1)+'. '+s.title.split(' ')[0];
+    wrap.appendChild(t);
+  });
+}
+
+function renderIntro() {
+  const s = SECTIONS[state.sectionIdx];
+  document.getElementById('section-number').textContent = 'Section '+(state.sectionIdx+1)+' of '+SECTIONS.length;
+  document.getElementById('section-title').textContent = s.title;
+  document.getElementById('section-desc').textContent = s.desc;
+  document.getElementById('section-meta').textContent = s.questions.length+' questions in this section';
+  showScreen('intro');
+}
+
+function renderQuestion() {
+  answering = false;
+  const s = SECTIONS[state.sectionIdx];
+  const q = s.questions[state.questionIdx];
+  document.getElementById('q-counter').textContent = 'Question '+(state.questionIdx+1)+' of '+s.questions.length;
+  document.getElementById('q-text').textContent = q.text;
+  const hintBtn = document.getElementById('hint-btn');
+  const tooltip = document.getElementById('tooltip-box');
+  tooltip.classList.remove('visible');
+  if (q.hint) { hintBtn.style.display='inline-flex'; tooltip.textContent=q.hint; }
+  else { hintBtn.style.display='none'; tooltip.textContent=''; }
+  const card = document.getElementById('question-card');
+  card.classList.remove('fly-left','fly-right','tilting-left','tilting-right');
+  const pct = Math.round((answeredQ()/totalQ())*100);
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('overall-progress-text').textContent = pct+'% complete';
+  document.getElementById('q-fraction').textContent = (state.sectionIdx+1)+'/'+SECTIONS.length+' sections';
+  renderTabs();
+  showScreen('question');
+}
+
+function answer(choice) {
+  if (answering) return;
+  answering = true;
+  state.responses[state.sectionIdx][state.questionIdx] = choice;
+  const card = document.getElementById('question-card');
+  card.classList.remove('tilting-left','tilting-right');
+  card.classList.add(choice==='do'?'fly-right':'fly-left');
+  setTimeout(() => {
+    if (state.questionIdx < SECTIONS[state.sectionIdx].questions.length-1) { state.questionIdx++; renderQuestion(); }
+    else { renderSectionSummary(); }
+  }, 340);
+}
+
+function renderSectionSummary() {
+  const s = SECTIONS[state.sectionIdx];
+  const resps = state.responses[state.sectionIdx];
+  const doList=[], devList=[];
+  resps.forEach((r,i) => (r==='do'?doList:devList).push(s.questions[i].text));
+  document.getElementById('summary-badge').textContent = state.sectionIdx+1;
+  document.getElementById('summary-title-text').textContent = s.title;
+  document.getElementById('summary-stat').textContent = 'You already do '+doList.length+' of '+s.questions.length+' practices in this section'+(doList.length>=Math.ceil(s.questions.length/2)?' — strong foundation!':' — great growth opportunity ahead!');
+  const fill = (id, list) => {
+    const el = document.getElementById(id); el.innerHTML='';
+    (list.length?list:['None selected']).forEach(t => { const d=document.createElement('div'); d.className='summary-item'; d.textContent=t; el.appendChild(d); });
+  };
+  fill('summary-do-list', doList); fill('summary-dev-list', devList);
+  document.getElementById('next-section-btn').textContent = state.sectionIdx<SECTIONS.length-1 ? 'Next section →' : 'See your full profile →';
+  showScreen('summary');
+}
+
+function getScores() {
+  return SECTIONS.map((s,i) => Math.round((state.responses[i].filter(r=>r==='do').length/s.questions.length)*100));
+}
+
+function renderFinal() {
+  const scores = getScores();
+  if (radarChart) { radarChart.destroy(); radarChart=null; }
+  const ctx = document.getElementById('radar-chart').getContext('2d');
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: SECTIONS.map(s => s.title.split(' ').slice(0,2).join(' ')),
+      datasets: [{ data: scores, backgroundColor:'rgba(166,25,46,0.12)', borderColor:'#A6192E', borderWidth:2, pointBackgroundColor:'#A6192E', pointRadius:4 }]
+    },
+    options: { scales:{ r:{ min:0, max:100, ticks:{ stepSize:25, font:{size:10} }, pointLabels:{ font:{size:11} } } }, plugins:{ legend:{display:false} }, responsive:false }
+  });
+  const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+  const strongest = SECTIONS[scores.indexOf(Math.max(...scores))].title;
+  const needsMost = SECTIONS[scores.indexOf(Math.min(...scores))].title;
+  let narrative = '';
+  if (avg>=75) narrative='You are a highly evidence-informed practitioner. Across almost all areas you are already applying the science of learning in your teaching. Your strongest section is '+strongest+'. Even so, your identified development area — '+needsMost+' — offers a meaningful opportunity to go even deeper.';
+  else if (avg>=50) narrative='You have a solid grounding in evidence-informed teaching. You are already applying many science of learning principles, particularly in '+strongest+'. Your responses suggest the greatest growth opportunity lies in '+needsMost+', which may be worth prioritising as a focus area.';
+  else narrative='You are at the beginning of your evidence-informed teaching journey — which is an exciting place to be. Your strongest area so far is '+strongest+'. There is rich opportunity ahead, especially in '+needsMost+', where deepening your practice is likely to have the most impact on student learning.';
+  document.getElementById('narrative-text').textContent = narrative;
+  const barsEl = document.getElementById('section-bars'); barsEl.innerHTML='';
+  SECTIONS.forEach((s,i) => {
+    const row=document.createElement('div'); row.className='bar-row';
+    row.innerHTML='<div class="bar-label">'+s.title.split(' ').slice(0,3).join(' ')+'</div><div class="bar-track"><div class="bar-fill" style="width:0%" data-pct="'+scores[i]+'"></div></div><div class="bar-pct">'+scores[i]+'%</div>';
+    barsEl.appendChild(row);
+  });
+  setTimeout(()=>document.querySelectorAll('.bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';}),120);
+  showScreen('final');
+}
+
+function buildPrintHTML() {
+  const scores = getScores();
+  const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+  const strongest = SECTIONS[scores.indexOf(Math.max(...scores))].title;
+  const needsMost = SECTIONS[scores.indexOf(Math.min(...scores))].title;
+  let narrative='';
+  if (avg>=75) narrative='You are a highly evidence-informed practitioner. Across almost all areas you are already applying the science of learning in your teaching. Your strongest section is '+strongest+'. Even so, your identified development area — '+needsMost+' — offers a meaningful opportunity to go even deeper.';
+  else if (avg>=50) narrative='You have a solid grounding in evidence-informed teaching. You are already applying many science of learning principles, particularly in '+strongest+'. Your responses suggest the greatest growth opportunity lies in '+needsMost+', which may be worth prioritising as a focus area.';
+  else narrative='You are at the beginning of your evidence-informed teaching journey — which is an exciting place to be. Your strongest area so far is '+strongest+'. There is rich opportunity ahead, especially in '+needsMost+', where deepening your practice is likely to have the most impact on student learning.';
+  const date = new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  let sectionsHTML='';
+  SECTIONS.forEach((s,i) => {
+    const resps=state.responses[i];
+    const doItems=resps.map((r,j)=>r==='do'?s.questions[j].text:null).filter(Boolean);
+    const devItems=resps.map((r,j)=>r==='develop'?s.questions[j].text:null).filter(Boolean);
+    const doRows=doItems.map(t=>'<tr><td style="padding:4px 8px 4px 0;font-size:12px;color:#A6192E;vertical-align:top;">&#10003;</td><td style="padding:4px 0;font-size:12px;color:#373A36;line-height:1.5;">'+t+'</td></tr>').join('');
+    const devRows=devItems.map(t=>'<tr><td style="padding:4px 8px 4px 0;font-size:12px;color:#80225F;vertical-align:top;">&#8593;</td><td style="padding:4px 0;font-size:12px;color:#373A36;line-height:1.5;">'+t+'</td></tr>').join('');
+    sectionsHTML+='<div class="print-section-block" style="margin-bottom:1.4em;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;border-bottom:2px solid #A6192E;padding-bottom:5px;"><div style="background:#A6192E;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;">'+(i+1)+'</div><div style="font-size:14px;font-weight:600;color:#373A36;">'+s.title+'</div><div style="margin-left:auto;font-size:12px;color:#A6192E;font-weight:600;">'+scores[i]+'% already doing</div></div><table style="width:100%;border-collapse:collapse;"><tr><td style="width:50%;vertical-align:top;padding-right:14px;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#A6192E;margin-bottom:5px;">Already doing</div><table>'+(doRows||'<tr><td style="font-size:12px;color:#888;">None selected</td></tr>')+'</table></td><td style="width:50%;vertical-align:top;padding-left:14px;border-left:1px solid #ddd;"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#80225F;margin-bottom:5px;">Want to develop</div><table>'+(devRows||'<tr><td style="font-size:12px;color:#888;">None selected</td></tr>')+'</table></td></tr></table></div>';
+  });
+  const barRows=SECTIONS.map((s,i)=>'<tr><td style="font-size:11px;color:#373A36;width:150px;text-align:right;padding-right:8px;white-space:nowrap;">'+s.title.split(' ').slice(0,3).join(' ')+'</td><td style="width:180px;"><div style="height:7px;background:#eee;border-radius:4px;"><div style="height:7px;background:#A6192E;border-radius:4px;width:'+Math.round(scores[i]*1.8)+'px;"></div></div></td><td style="font-size:11px;color:#A6192E;padding-left:8px;font-weight:600;">'+scores[i]+'%</td></tr>').join('');
+  return '<div style="font-family:Georgia,serif;color:#373A36;max-width:700px;margin:0 auto;padding:1cm 0;"><div style="border-bottom:3px solid #A6192E;padding-bottom:14px;margin-bottom:20px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#A6192E;margin-bottom:5px;">Macquarie University — Science of Learning</div><div style="font-size:22px;font-weight:600;color:#373A36;margin-bottom:3px;">Reflective Planning Checklist</div><div style="font-size:11px;color:#888;">Completed '+date+'</div></div><div style="background:#EDEBE5;border-radius:6px;padding:14px 18px;margin-bottom:20px;border-left:4px solid #A6192E;"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#373A36;margin-bottom:6px;">Your profile summary</div><p style="font-size:13px;line-height:1.7;color:#373A36;margin:0 0 12px;">'+narrative+'</p><table style="border-collapse:collapse;">'+barRows+'</table></div><div style="font-size:12px;font-weight:700;color:#373A36;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.07em;">Your responses by section</div>'+sectionsHTML+'<div style="margin-top:20px;padding-top:12px;border-top:1px solid #ccc;font-size:10px;color:#888;text-align:center;">Macquarie University Teachers\'s Learning Hub | Science of Learning: How Learning Works | A/Prof Penny Van Bergen</div></div>';
+}
+
+// Events
+document.getElementById('start-section-btn').addEventListener('click', ()=>{ state.questionIdx=0; renderQuestion(); });
+document.getElementById('hint-btn').addEventListener('click', e=>{ e.stopPropagation(); document.getElementById('tooltip-box').classList.toggle('visible'); });
+document.getElementById('next-section-btn').addEventListener('click', ()=>{
+  if (state.sectionIdx<SECTIONS.length-1) { state.sectionIdx++; renderIntro(); } else { renderFinal(); }
+});
+document.getElementById('bucket-do').addEventListener('click', ()=>answer('do'));
+document.getElementById('bucket-develop').addEventListener('click', ()=>answer('develop'));
+document.getElementById('restart-btn').addEventListener('click', ()=>{
+  state={sectionIdx:0,questionIdx:0,responses:SECTIONS.map(s=>s.questions.map(()=>null))};
+  if(radarChart){radarChart.destroy();radarChart=null;}
+  renderIntro();
+});
+document.getElementById('print-btn').addEventListener('click', ()=>{
+  const pa=document.getElementById('print-area');
+  pa.innerHTML=buildPrintHTML(); pa.style.display='block';
+  window.print();
+  setTimeout(()=>{pa.style.display='none';},1200);
+});
+
+// Drag
+const card=document.getElementById('question-card');
+let dragStartX=0, dragDropped=false;
+card.addEventListener('dragstart', e=>{ dragDropped=false; dragStartX=e.clientX; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain','card'); });
+card.addEventListener('drag', e=>{ if(!e.clientX) return; const dx=e.clientX-dragStartX; card.classList.remove('tilting-left','tilting-right'); if(dx>20) card.classList.add('tilting-right'); else if(dx<-20) card.classList.add('tilting-left'); });
+['bucket-do','bucket-develop'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';el.classList.add('drag-over');});
+  el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+  el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');dragDropped=true;answer(id==='bucket-do'?'do':'develop');});
+});
+card.addEventListener('dragend',e=>{ card.classList.remove('tilting-left','tilting-right'); if(dragDropped) return; const dx=e.clientX-dragStartX; if(dx>60) answer('do'); else if(dx<-60) answer('develop'); });
+
+// Touch
+let touchStartX=0;
+card.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
+card.addEventListener('touchmove',e=>{ const dx=e.touches[0].clientX-touchStartX; card.classList.remove('tilting-left','tilting-right'); if(dx>20) card.classList.add('tilting-right'); else if(dx<-20) card.classList.add('tilting-left'); },{passive:true});
+card.addEventListener('touchend',e=>{ card.classList.remove('tilting-left','tilting-right'); const dx=e.changedTouches[0].clientX-touchStartX; if(dx>60) answer('do'); else if(dx<-60) answer('develop'); });
+
+renderIntro();
+</script>
+</body>
+</html>
