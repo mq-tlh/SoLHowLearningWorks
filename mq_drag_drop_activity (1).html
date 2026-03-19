@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Would You Do? | Science of Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:        #A6192E;
+    --charcoal:   #373A36;
+    --sand:       #EDEBE5;
+    --purple:     #80225F;
+    --deep-red:   #76232F;
+    --border:     #e0deda;
+    --page-bg:    #f7f6f3;
+    --card-bg:    #ffffff;
+    --green:      #2a7a36;
+    --green-bg:   #f0f9f1;
+    --red-bg:     #fff4f5;
+    --radius-sm:  8px;
+    --radius-lg:  12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background: var(--page-bg);
+    color: var(--charcoal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: var(--charcoal);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 56px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 3rem;
+  }
+
+  .module-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 0.35rem;
+  }
+  .activity-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 800;
+    font-size: 1.65rem;
+    color: var(--charcoal);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  /* ── HOW IT WORKS (icon steps) ── */
+  .how-it-works {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 480px) {
+    .how-it-works { grid-template-columns: 1fr; gap: 0.5rem; }
+  }
+  .hiw-step {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 0.9rem 1rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .hiw-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--sand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .hiw-step:nth-child(1) .hiw-icon { background: rgba(166,25,46,0.1); }
+  .hiw-step:nth-child(2) .hiw-icon { background: rgba(128,34,95,0.1); }
+  .hiw-step:nth-child(3) .hiw-icon { background: rgba(55,58,54,0.08); }
+  .hiw-label {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--charcoal);
+    line-height: 1.3;
+  }
+  .hiw-desc {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #555;
+  }
+  .hiw-hint {
+    background: rgba(166,25,46,0.05);
+    border: 1px solid rgba(166,25,46,0.15);
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--deep-red);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .hiw-hint-icon { flex-shrink: 0; font-size: 0.9rem; margin-top: 1px; }
+
+  /* ── SCENARIO ── */
+  .scenario-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .scenario-header {
+    background: var(--charcoal);
+    padding: 0.7rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .scenario-header-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .scenario-header-text {
+    flex: 1;
+  }
+  .scenario-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .scenario-subtitle {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .scenario-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .scenario-tag {
+    background: rgba(255,255,255,0.13);
+    color: rgba(255,255,255,0.85);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+  .scenario-body {
+    padding: 1rem 1.25rem 1.1rem;
+    background: var(--sand);
+  }
+  .scenario-body p {
+    font-size: 0.93rem;
+    line-height: 1.68;
+    color: var(--charcoal);
+  }
+  .scenario-body p + p { margin-top: 0.5rem; }
+  .scenario-body p strong { font-weight: 600; }
+
+  /* ── PROGRESS ── */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .progress-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    opacity: 0.55;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 7rem;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 99px;
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  /* ── STRATEGY CARD ── */
+  .card-stage {
+    margin-bottom: 1.25rem;
+    overflow: hidden; /* clip slide animation */
+    border-radius: var(--radius-lg);
+  }
+  .current-card {
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.6rem 1.4rem;
+    font-size: 1.07rem;
+    line-height: 1.72;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    position: relative;
+  }
+  .current-card.anim-enter {
+    animation: cardSlideIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes cardSlideIn {
+    0%   { opacity: 0; transform: translateX(60px) scale(0.97); }
+    60%  { opacity: 1; }
+    100% { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  .current-card.anim-exit {
+    animation: cardSlideOut 0.28s cubic-bezier(.4,0,.6,1) forwards;
+  }
+  @keyframes cardSlideOut {
+    from { opacity: 1; transform: translateX(0) scale(1); }
+    to   { opacity: 0; transform: translateX(-55px) scale(0.97); }
+  }
+  .card-number-badge {
+    position: absolute;
+    top: -1px;
+    right: 14px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    padding: 3px 11px 4px;
+    border-radius: 0 0 6px 6px;
+  }
+  /* ── STRATEGY PROMPT + LIGHTBULB ── */
+  .strategy-prompt {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    opacity: 0.5;
+    margin-bottom: 0.55rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .bulb-wrap {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .bulb-svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    overflow: visible;
+  }
+  /* Glow ring behind bulb */
+  .bulb-glow {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,200,50,0.55) 0%, rgba(255,200,50,0) 70%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* Entry animation triggers via JS class */
+  .bulb-wrap.do-animate .bulb-glow {
+    animation: glowPulse 1.6s ease-out forwards;
+  }
+  .bulb-wrap.do-animate .bulb-body {
+    animation: bulbLight 1.6s ease-out forwards;
+  }
+  .bulb-wrap.do-animate .bulb-rays line {
+    animation: rayGrow 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .bulb-wrap.do-animate .bulb-rays line:nth-child(1) { animation-delay: 0.18s; }
+  .bulb-wrap.do-animate .bulb-rays line:nth-child(2) { animation-delay: 0.22s; }
+  .bulb-wrap.do-animate .bulb-rays line:nth-child(3) { animation-delay: 0.26s; }
+  .bulb-wrap.do-animate .bulb-rays line:nth-child(4) { animation-delay: 0.30s; }
+  .bulb-wrap.do-animate .bulb-rays line:nth-child(5) { animation-delay: 0.24s; }
+  .bulb-wrap.do-animate .bulb-rays line:nth-child(6) { animation-delay: 0.20s; }
+  @keyframes glowPulse {
+    0%   { opacity: 0; transform: scale(0.6); }
+    30%  { opacity: 1; transform: scale(1.1); }
+    70%  { opacity: 0.6; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1); }
+  }
+  @keyframes bulbLight {
+    0%   { fill: #d4d0c8; }
+    25%  { fill: #ffe566; }
+    55%  { fill: #ffd233; }
+    100% { fill: #ffc107; }
+  }
+  @keyframes rayGrow {
+    from { opacity: 0; transform: scaleX(0); }
+    to   { opacity: 1; transform: scaleX(1); }
+  }
+
+  /* ── CHOICE BUTTONS ── */
+  .choice-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin-bottom: 0.6rem;
+  }
+  .choice-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 480px) {
+    .choice-row { grid-template-columns: 1fr; }
+  }
+  .choice-btn {
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 0.85rem;
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s, box-shadow 0.15s;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-family: inherit;
+  }
+  .choice-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  }
+  .choice-btn:not(:disabled):active { transform: translateY(0) scale(0.97); }
+  .choice-btn:disabled { cursor: default; }
+  .cz-num {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.45;
+  }
+  .cz-name {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.87rem;
+    line-height: 1.25;
+  }
+
+  .choice-btn-1 { border-top: 3px solid var(--red); }
+  .choice-btn-1 .cz-name { color: var(--red); }
+  .choice-btn-1:not(:disabled):hover { border-color: var(--red); background: rgba(166,25,46,0.04); }
+
+  .choice-btn-2 { border-top: 3px solid var(--purple); }
+  .choice-btn-2 .cz-name { color: var(--purple); }
+  .choice-btn-2:not(:disabled):hover { border-color: var(--purple); background: rgba(128,34,95,0.04); }
+
+  .choice-btn-3 { border-top: 3px solid var(--charcoal); }
+  .choice-btn-3 .cz-name { color: var(--charcoal); }
+  .choice-btn-3:not(:disabled):hover { border-color: var(--charcoal); background: rgba(55,58,54,0.04); }
+
+  /* Selected state */
+  .choice-btn.selected-correct {
+    border-color: var(--green) !important;
+    background: var(--green-bg) !important;
+    opacity: 1 !important;
+  }
+  .choice-btn.selected-incorrect {
+    border-color: var(--red) !important;
+    background: var(--red-bg) !important;
+    opacity: 1 !important;
+  }
+  .choice-btn.show-correct {
+    border-color: var(--green) !important;
+    background: var(--green-bg) !important;
+    opacity: 1 !important;
+  }
+  .choice-btn.dimmed { opacity: 0.35; }
+
+  /* ── INLINE FEEDBACK ── */
+  .choice-feedback {
+    display: none;
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.1rem;
+    font-size: 0.94rem;
+    line-height: 1.58;
+    align-items: flex-start;
+    gap: 0.65rem;
+    animation: fadeSlideIn 0.28s ease forwards;
+  }
+  .choice-feedback.visible { display: flex; }
+  .choice-feedback.fb-correct {
+    background: var(--green-bg);
+    border: 1.5px solid #b6ddb9;
+    color: #1b5e20;
+  }
+  .choice-feedback.fb-incorrect {
+    background: var(--red-bg);
+    border: 1.5px solid #f5c2c7;
+    color: var(--deep-red);
+  }
+  .fb-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .fb-body strong {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.9rem;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── NEXT BUTTON ── */
+  #next-btn {
+    display: none;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.65rem 1.6rem;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--red);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.5rem;
+  }
+  #next-btn:hover { background: var(--deep-red); }
+  #next-btn:active { transform: scale(0.97); }
+  #next-btn.visible { display: inline-block; }
+
+  /* ── SUMMARY ── */
+  #summary-screen { display: none; }
+  #summary-screen.visible { display: block; }
+
+  .summary-score-block {
+    background: var(--charcoal);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: 1.4rem 1.7rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .summary-score-block.all-correct { background: var(--green); }
+  .score-big {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .score-meta strong {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1.05rem;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .score-meta span { font-size: 0.9rem; opacity: 0.8; }
+
+  .section-label {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin-bottom: 0.7rem;
+  }
+  .review-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .review-item {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .review-item.ri-correct { border-color: #b6ddb9; background: var(--green-bg); }
+  .review-item.ri-incorrect { border-color: #f5c2c7; background: var(--red-bg); }
+  .ri-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .review-item.ri-correct .ri-icon { color: var(--green); }
+  .review-item.ri-incorrect .ri-icon { color: var(--red); }
+  .ri-label {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 0.12rem;
+  }
+  .review-item.ri-correct .ri-label { color: var(--green); }
+  .review-item.ri-incorrect .ri-label { color: var(--red); }
+  .ri-correction { font-size: 0.83rem; color: #555; margin-top: 0.2rem; }
+  .ri-correction strong { color: var(--charcoal); }
+
+  /* Feedback panels */
+  .feedback-panels { margin-bottom: 1.5rem; }
+  .feedback-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 0.65rem;
+  }
+  .fp-title {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red    { background: var(--red); }
+  .dot-purple { background: var(--purple); }
+  .dot-char   { background: var(--charcoal); }
+  .feedback-panel p { font-size: 0.92rem; line-height: 1.65; margin-bottom: 0.5rem; }
+  .feedback-panel p:last-child { margin-bottom: 0; }
+  .feedback-panel em { font-style: italic; color: #444; }
+
+  .btn-reset {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: var(--sand);
+    color: var(--charcoal);
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-reset:hover { background: #e4e2db; }
+  .btn-reset:active { transform: scale(0.97); }
+
+  /* ── FOOTER ── */
+  .site-footer {
+    background: var(--charcoal);
+    color: rgba(255,255,255,0.5);
+    font-size: 0.78rem;
+    text-align: center;
+    padding: 0.9rem 1.5rem;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-title">Science of Learning: How Learning Works</div>
+</header>
+
+<main>
+  <div class="module-label">Module 6 — Interactive Activity</div>
+  <h1 class="activity-title">What Would You Do?</h1>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-it-works">
+    <div class="hiw-step">
+      <div class="hiw-icon">📖</div>
+      <div class="hiw-label">Read the scenario</div>
+      <div class="hiw-desc">Meet Alex — a teacher planning a Year 10 lesson.</div>
+    </div>
+    <div class="hiw-step">
+      <div class="hiw-icon">🃏</div>
+      <div class="hiw-label">Sort 9 strategies</div>
+      <div class="hiw-desc">One card at a time — choose the best-fit category for each.</div>
+    </div>
+    <div class="hiw-step">
+      <div class="hiw-icon">💡</div>
+      <div class="hiw-label">Get instant feedback</div>
+      <div class="hiw-desc">Find out why each strategy belongs where it does.</div>
+    </div>
+  </div>
+  <div class="hiw-hint">
+    <span class="hiw-hint-icon">⚠️</span>
+    Some strategies could fit more than one category — focus on the <strong>primary purpose</strong> each serves.
+  </div>
+
+  <!-- SCENARIO -->
+  <div class="scenario-card">
+    <div class="scenario-header">
+      <div class="scenario-header-icon">👩‍🏫</div>
+      <div class="scenario-header-text">
+        <div class="scenario-label">The Scenario</div>
+        <div class="scenario-subtitle">Alex's Year 10 Persuasive Writing Lesson</div>
+      </div>
+      <div class="scenario-tags">
+        <span class="scenario-tag">Year 10 English</span>
+        <span class="scenario-tag">Lesson 3</span>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <p>Alex is preparing a lesson on persuasive writing. Students have been introduced to persuasive techniques but have <strong>not yet applied them</strong> in their own writing.</p>
+      <p>Alex's goal: move students from <strong>knowing about</strong> persuasive techniques to being able to <strong>use them independently</strong>. Alex has a range of strategies available and needs to decide how to structure the lesson.</p>
+    </div>
+  </div>
+
+  <!-- ACTIVITY AREA -->
+  <div id="activity-area">
+
+    <div class="progress-row">
+      <div class="progress-label" id="progress-label">Strategy 1 of 9</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <div class="card-stage">
+      <div class="current-card" id="current-card">
+        <div class="card-number-badge" id="card-badge">Card 1</div>
+        <div class="strategy-prompt">
+          <span class="bulb-wrap" id="bulb-wrap">
+            <span class="bulb-glow"></span>
+            <svg class="bulb-svg" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- rays -->
+              <g class="bulb-rays" stroke="#ffc107" stroke-width="1.5" stroke-linecap="round" opacity="0.9">
+                <line x1="10" y1="1" x2="10" y2="0"/>
+                <line x1="15.5" y1="3.2" x2="16.3" y2="2.4"/>
+                <line x1="4.5" y1="3.2" x2="3.7" y2="2.4"/>
+                <line x1="18" y1="8" x2="19.2" y2="8"/>
+                <line x1="2" y1="8" x2="0.8" y2="8"/>
+                <line x1="10" y1="1" x2="10" y2="0.2"/>
+              </g>
+              <!-- bulb glass -->
+              <path class="bulb-body" d="M10 3C6.69 3 4 5.69 4 9c0 2.12 1.07 3.99 2.7 5.1V15.5a.5.5 0 0 0 .5.5h5.6a.5.5 0 0 0 .5-.5v-1.4C14.93 12.99 16 11.12 16 9c0-3.31-2.69-6-6-6z" fill="#d4d0c8"/>
+              <!-- base bands -->
+              <rect x="6.8" y="16" width="6.4" height="1.1" rx="0.4" fill="#aaa8a0"/>
+              <rect x="7.2" y="17.4" width="5.6" height="1" rx="0.4" fill="#aaa8a0"/>
+              <!-- bottom cap -->
+              <path d="M8.2 18.6h3.6l-.4 1.4H8.6z" fill="#aaa8a0"/>
+            </svg>
+          </span>
+          Teaching strategy
+        </div>
+        <div id="card-body"></div>
+      </div>
+    </div>
+
+    <div class="choice-label">Which category best describes this strategy?</div>
+    <div class="choice-row" id="choice-row">
+      <button class="choice-btn choice-btn-1" id="btn-zone-1" onclick="choose(1)">
+        <span class="cz-num">Zone 1</span>
+        <span class="cz-name">Manage Cognitive Load</span>
+      </button>
+      <button class="choice-btn choice-btn-2" id="btn-zone-2" onclick="choose(2)">
+        <span class="cz-num">Zone 2</span>
+        <span class="cz-name">Ensure Deep Thinking</span>
+      </button>
+      <button class="choice-btn choice-btn-3" id="btn-zone-3" onclick="choose(3)">
+        <span class="cz-num">Zone 3</span>
+        <span class="cz-name">Retrieval Practice</span>
+      </button>
+    </div>
+
+    <div class="choice-feedback" id="choice-feedback">
+      <span class="fb-icon" id="fb-icon"></span>
+      <div class="fb-body" id="fb-body"></div>
+    </div>
+
+    <button id="next-btn" onclick="nextCard()">Next strategy →</button>
+
+  </div>
+
+  <!-- SUMMARY -->
+  <div id="summary-screen">
+    <div class="summary-score-block" id="score-block">
+      <div class="score-big" id="score-big"></div>
+      <div class="score-meta">
+        <strong id="score-headline"></strong>
+        <span id="score-sub"></span>
+      </div>
+    </div>
+
+    <div class="section-label">Your answers</div>
+    <div class="review-list" id="review-list"></div>
+
+    <div class="section-label" style="margin-top:0.25rem">Explanation</div>
+    <div class="feedback-panels">
+      <div class="feedback-panel">
+        <div class="fp-title"><span class="dot dot-red"></span>Zone 1: Manage Cognitive Load</div>
+        <p>Cards 2, 5, and 8 all address cognitive load — the amount of mental effort working memory is asked to carry.</p>
+        <p>Using a worked example (Card 2) reduces the effort needed to understand the task by providing a clear model before independent practice. Sequencing one technique at a time (Card 5) avoids overwhelming working memory with too many new elements at once. Removing the distracting image (Card 8) eliminates extraneous load (cognitive effort that doesn't contribute to learning).</p>
+        <p><em>The principle: reduce what isn't necessary so working memory can focus on what matters.</em></p>
+      </div>
+      <div class="feedback-panel">
+        <div class="fp-title"><span class="dot dot-purple"></span>Zone 2: Ensure Deep Thinking</div>
+        <p>Cards 3, 6, and 9 all require students to engage elaboratively by extending, connecting, or evaluating ideas rather than passively receiving them.</p>
+        <p>Analysing a persuasive text (Card 3) requires students to interpret meaning and technique — not just identify. Comparing techniques with a partner (Card 6) builds connections between new and prior knowledge, which deepens encoding. Drafting and comparing against a model (Card 9) requires self-evaluation (a metacognitive and elaborative process).</p>
+        <p><em>The principle: deep encoding happens when students do the thinking, not when they watch or listen.</em></p>
+      </div>
+      <div class="feedback-panel">
+        <div class="fp-title"><span class="dot dot-char"></span>Zone 3: Retrieval Practice</div>
+        <p>Cards 1, 4, and 7 all ask students to actively pull information from long-term memory back into working memory.</p>
+        <p>The opening recall prompt (Card 1) is a classic retrieval practice task (free recall before the lesson begins), which also strengthens the memory pathway for prior content. The end-of-lesson brain dump (Card 4) consolidates the session's learning through self-generated retrieval. The opening discussion about persuasion (Card 7) activates relevant schemas and prior experience, which is a form of retrieval that also prepares long-term memory to receive new information.</p>
+        <p><em>The principle: every time students retrieve knowledge, that memory pathway is strengthened. Retrieval practice doesn't have to look like a test.</em></p>
+      </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetActivity()">↺ Try again</button>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  Macquarie University Teachers' Learning Hub | Science of Learning: How Learning Works | A/Prof Penny Van Bergen
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const ZONE_NAMES = {
+    1: 'Manage Cognitive Load',
+    2: 'Ensure Deep Thinking',
+    3: 'Retrieval Practice'
+  };
+
+  const ALL_CARDS = [
+    { id: 1, text: "Alex displays the following prompt for two minutes: 'What do you remember about the persuasive techniques we covered last lesson? Jot down as many as you can.'", zone: 3, feedback: "This is retrieval practice — students are actively pulling previously learned content from long-term memory before the lesson begins, strengthening those memory pathways." },
+    { id: 2, text: "Alex presents two clear worked examples of a persuasive paragraph on the board, annotating each technique used, before asking students to attempt their own.", zone: 1, feedback: "Worked examples manage cognitive load by providing a clear model before independent practice, reducing the mental effort required to understand the task." },
+    { id: 3, text: "Alex asks students to read a short persuasive text and identify: What argument is being made? What technique is the writer using here? Why might this be effective for this audience?", zone: 2, feedback: "This ensures deep thinking — students must interpret meaning and evaluate effectiveness, going beyond surface identification to engage elaboratively with the text." },
+    { id: 4, text: "At the end of the lesson, Alex asks students to write the three most important things they learned today (from memory), without reviewing their notes.", zone: 3, feedback: "This is a classic retrieval practice task — a 'brain dump' that requires students to actively retrieve the lesson's content from memory, consolidating learning." },
+    { id: 5, text: "Alex breaks the lesson into two parts: first teaching one technique at a time with a brief practice task for each, rather than presenting all techniques simultaneously.", zone: 1, feedback: "Sequencing one technique at a time manages cognitive load by avoiding overloading working memory with too many new elements at once." },
+    { id: 6, text: "Alex asks students to explain to a partner: 'How is the technique you just used similar to or different from the one we looked at last week?'", zone: 2, feedback: "This ensures deep thinking — comparing new and prior knowledge builds connections that deepen encoding, going beyond simply rehearsing information." },
+    { id: 7, text: "Alex opens the lesson by asking: 'Can anyone give me an example of a time you were persuaded to do something — an ad, a speech, anything? What made it work?' Students share before the lesson begins.", zone: 3, feedback: "This is schema activation and retrieval — students pull prior experiences and knowledge from long-term memory, which prepares the mind to receive new information." },
+    { id: 8, text: "Alex removes a decorative background image from the writing task instructions after noticing students were asking questions about the image rather than focusing on the task.", zone: 1, feedback: "Removing the distracting image eliminates extraneous cognitive load — effort that doesn't contribute to learning — so working memory can focus on what matters." },
+    { id: 9, text: "Alex asks students to draft a short persuasive paragraph, then compare it against an annotated model and identify one thing they did well and one thing to refine.", zone: 2, feedback: "This ensures deep thinking through self-evaluation — students judge their own work against a standard, a metacognitive and elaborative process that deepens understanding." }
+  ];
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let order = [];
+  let currentIndex = 0;
+  let answers = [];
+  let canAnswer = true;
+
+  const progressLabel  = document.getElementById('progress-label');
+  const progressFill   = document.getElementById('progress-fill');
+  const currentCard    = document.getElementById('current-card');
+  const cardBadge      = document.getElementById('card-badge');
+  const cardBody       = document.getElementById('card-body');
+  const choiceRow      = document.getElementById('choice-row');
+  const choiceFeedback = document.getElementById('choice-feedback');
+  const fbIcon         = document.getElementById('fb-icon');
+  const fbBody         = document.getElementById('fb-body');
+  const nextBtn        = document.getElementById('next-btn');
+  const activityArea   = document.getElementById('activity-area');
+  const summaryScreen  = document.getElementById('summary-screen');
+
+  function init() {
+    order = shuffle(ALL_CARDS);
+    currentIndex = 0;
+    answers = [];
+    canAnswer = true;
+    activityArea.style.display = '';
+    summaryScreen.classList.remove('visible');
+    renderCard(false);
+  }
+
+  function renderCard(animate) {
+    canAnswer = true;
+    const card = order[currentIndex];
+
+    progressLabel.textContent = `Strategy ${currentIndex + 1} of ${order.length}`;
+    progressFill.style.width = ((currentIndex / order.length) * 100) + '%';
+
+    cardBadge.textContent = `Card ${card.id}`;
+    cardBody.textContent = card.text;
+
+    // Reset buttons
+    [1,2,3].forEach(z => {
+      const b = document.getElementById(`btn-zone-${z}`);
+      b.disabled = false;
+      b.className = `choice-btn choice-btn-${z}`;
+    });
+
+    // Hide feedback & next
+    choiceFeedback.className = 'choice-feedback';
+    nextBtn.className = 'btn';
+    nextBtn.style.display = 'none';
+
+    if (animate) {
+      currentCard.classList.remove('anim-exit', 'anim-enter');
+      void currentCard.offsetWidth;
+      currentCard.classList.add('anim-enter');
+    }
+
+    // Trigger lightbulb animation on every card (with slight delay so card is visible first)
+    const bulb = document.getElementById('bulb-wrap');
+    bulb.classList.remove('do-animate');
+    void bulb.offsetWidth;
+    setTimeout(() => bulb.classList.add('do-animate'), animate ? 200 : 80);
+  }
+
+  window.choose = function (zoneChosen) {
+    if (!canAnswer) return;
+    canAnswer = false;
+
+    const card = order[currentIndex];
+    const isCorrect = zoneChosen === card.zone;
+    answers.push({ card, chosen: zoneChosen });
+
+    // Style all buttons
+    [1,2,3].forEach(z => {
+      const b = document.getElementById(`btn-zone-${z}`);
+      b.disabled = true;
+      if (z === zoneChosen) {
+        b.classList.add(isCorrect ? 'selected-correct' : 'selected-incorrect');
+      } else if (!isCorrect && z === card.zone) {
+        b.classList.add('show-correct');
+      } else {
+        b.classList.add('dimmed');
+      }
+    });
+
+    // Feedback
+    choiceFeedback.classList.add('visible');
+    if (isCorrect) {
+      choiceFeedback.classList.add('fb-correct');
+      fbIcon.textContent = '✓';
+      fbBody.innerHTML = `<strong>Correct — Zone ${card.zone}: ${ZONE_NAMES[card.zone]}</strong>${card.feedback}`;
+    } else {
+      choiceFeedback.classList.add('fb-incorrect');
+      fbIcon.textContent = '✗';
+      fbBody.innerHTML = `<strong>Not quite — this belongs in Zone ${card.zone}: ${ZONE_NAMES[card.zone]}</strong>${card.feedback}`;
+    }
+
+    const isLast = currentIndex === order.length - 1;
+    nextBtn.style.display = 'inline-block';
+    nextBtn.textContent = isLast ? 'See results →' : 'Next strategy →';
+  };
+
+  window.nextCard = function () {
+    const isLast = currentIndex === order.length - 1;
+    if (isLast) { showSummary(); return; }
+
+    currentCard.classList.add('anim-exit');
+    setTimeout(() => {
+      currentCard.classList.remove('anim-exit');
+      currentIndex++;
+      renderCard(true);
+    }, 260);
+  };
+
+  function showSummary() {
+    activityArea.style.display = 'none';
+    summaryScreen.classList.add('visible');
+
+    const correct = answers.filter(a => a.chosen === a.card.zone).length;
+    const total = answers.length;
+
+    const scoreBlock = document.getElementById('score-block');
+    scoreBlock.classList.toggle('all-correct', correct === total);
+    document.getElementById('score-big').textContent = `${correct}/${total}`;
+    document.getElementById('score-headline').textContent =
+      correct === total ? 'Perfect score!' :
+      correct >= 7 ? 'Great work!' :
+      correct >= 5 ? 'Good effort!' : 'Keep practising!';
+    document.getElementById('score-sub').textContent =
+      `You correctly classified ${correct} out of ${total} strategies.`;
+
+    const reviewList = document.getElementById('review-list');
+    reviewList.innerHTML = '';
+    answers.forEach(({ card, chosen }) => {
+      const ok = chosen === card.zone;
+      const div = document.createElement('div');
+      div.className = `review-item ${ok ? 'ri-correct' : 'ri-incorrect'}`;
+      div.innerHTML = `
+        <span class="ri-icon">${ok ? '✓' : '✗'}</span>
+        <div>
+          <div class="ri-label">Card ${card.id} — ${ok ? 'Correct' : 'Incorrect'}</div>
+          <div style="font-size:0.87rem;line-height:1.5;">${card.text}</div>
+          ${!ok ? `<div class="ri-correction">You chose Zone ${chosen}: <strong>${ZONE_NAMES[chosen]}</strong> — correct: Zone ${card.zone}: <strong>${ZONE_NAMES[card.zone]}</strong></div>` : ''}
+        </div>`;
+      reviewList.appendChild(div);
+    });
+
+    // Update progress to 100%
+    progressFill && (progressFill.style.width = '100%');
+
+    summaryScreen.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  window.resetActivity = function () {
+    summaryScreen.classList.remove('visible');
+    init();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  init();
+})();
+</script>
+</body>
+</html>
